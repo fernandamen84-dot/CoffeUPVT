@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>CoffeUPVT</ion-title>
+    <ion-buttons slot="end">
+      <button type="button" class="btn-carrito-header" (click)="irAlCarrito()" aria-label="Abrir carrito">
+        <ion-icon name="cart" class="icono-carrito-header"></ion-icon>
+        <span class="badge-carrito-header" *ngIf="obtenerCantidadCarrito() > 0">
+          {{ obtenerCantidadCarrito() }}
+        </span>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Barra de búsqueda -->
+  <ion-searchbar
+    placeholder="Buscar café, chilaquiles..."
+    [value]="textoBuscar"
+    (ionInput)="buscarProducto($event)"
+    (ionClear)="buscarProducto('')"
+    class="ion-no-padding ion-margin-bottom">
+  </ion-searchbar>
+
+  <!-- Chips de categoría con color e ícono representativo -->
+  <div class="categorias-scroll">
+    <button
+      type="button"
+      class="chip-categoria"
+      *ngFor="let cat of categorias"
+      [class.activo]="categoriaSeleccionada === cat.titulo"
+      [style.background]="categoriaSeleccionada === cat.titulo ? cat.activeBg : cat.bgColor"
+      [style.color]="categoriaSeleccionada === cat.titulo ? '#ffffff' : '#1f2937'"
+      (click)="filtrarCategoria(cat.titulo)">
+      <span
+        class="icono-circulo"
+        [style.background]="categoriaSeleccionada === cat.titulo ? 'rgba(255,255,255,0.22)' : '#ffffff'"
+        [style.color]="categoriaSeleccionada === cat.titulo ? '#ffffff' : cat.iconColor">
+        <ion-icon [name]="cat.icon"></ion-icon>
+      </span>
+      <span class="texto-cat">{{ cat.titulo }}</span>
+    </button>
+  </div>
+
+  <!-- Lista de productos filtrados -->
+  <div *ngIf="productosFiltrados.length > 0">
+    <ion-card *ngFor="let prod of productosFiltrados" class="ion-margin-bottom">
+      <img
+        *ngIf="prod.imagen"
+        [src]="prod.imagen"
+        [alt]="prod.nombre"
+        style="width: 100%; height: 180px; object-fit: cover; display: block;" />
+
+      <ion-card-header>
+        <ion-card-subtitle color="success"><strong>${{ prod.precio }} MXN</strong></ion-card-subtitle>
+        <ion-card-title>{{ prod.nombre }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p *ngIf="prod.descripcion" class="ion-margin-bottom">{{ prod.descripcion }}</p>
+        <ion-button
+          expand="block"
+          color="success"
+          (click)="agregarAlCarrito(prod.nombre, prod.precio)">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Agregar al carrito
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Estado vacío -->
+  <div *ngIf="productosFiltrados.length === 0" class="ion-text-center ion-padding" style="margin-top: 48px;">
+    <ion-icon name="search-outline" color="medium" style="font-size: 44px;"></ion-icon>
+    <p style="color: var(--ion-color-medium); margin-top: 10px;">
+      No se encontraron productos en esta categoría.
+    </p>
+  </div>
+
+</ion-content>

@@ -1,0 +1,176 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="volverAlMenu()" aria-label="Volver al menú principal">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Mi Carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding carrito-bg">
+
+  <!-- Tarjeta de notificaciones -->
+  <div class="bloque-notificaciones">
+    <div class="notif-info">
+      <span class="notif-icono">
+        <ion-icon name="notifications"></ion-icon>
+      </span>
+      <mat-slide-toggle [(ngModel)]="recibirNotificaciones">
+        Recibir notificaciones del pedido
+      </mat-slide-toggle>
+    </div>
+  </div>
+
+  <!-- Lista dinámica de productos agregados -->
+  <div *ngIf="productos.length > 0" class="lista-productos-carrito">
+    <div class="producto-carrito-card" *ngFor="let p of productos; let i = index">
+      <div class="prod-info">
+        <h2 class="prod-nombre">{{ p.nombre }}</h2>
+        <p class="prod-precio-unit">${{ p.precio }} MXN c/u</p>
+        <span class="prod-subtotal">Subtotal: ${{ p.precio * p.cantidad }} MXN</span>
+      </div>
+
+      <!-- Controles de Cantidad +, - y Eliminar -->
+      <div class="prod-controles">
+        <button type="button" class="btn-cant" (click)="disminuir(i)" aria-label="Disminuir cantidad">
+          <ion-icon name="remove"></ion-icon>
+        </button>
+        <span class="cant-numero">{{ p.cantidad }}</span>
+        <button type="button" class="btn-cant" (click)="aumentar(i)" aria-label="Aumentar cantidad">
+          <ion-icon name="add"></ion-icon>
+        </button>
+
+        <button type="button" class="btn-eliminar" (click)="eliminar(i)" aria-label="Eliminar producto">
+          <ion-icon name="trash"></ion-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje si el carrito está vacío -->
+  <div *ngIf="productos.length === 0" class="carrito-vacio">
+    <div class="vacio-circulo">
+      <ion-icon name="cart"></ion-icon>
+    </div>
+    <h3>Tu carrito está vacío</h3>
+    <p>¡Agrega un cafecito, snack o comida desde el menú principal!</p>
+    <ion-button fill="solid" color="primary" (click)="volverAlMenu()">
+      <ion-icon name="restaurant" slot="start"></ion-icon>
+      Ir al Menú Principal
+    </ion-button>
+  </div>
+
+  <!-- Resumen, Método de Pago y Botón Final (Solo si hay productos) -->
+  <div *ngIf="productos.length > 0" class="seccion-pago">
+
+    <!-- Caja del Total -->
+    <div class="resumen-total-box">
+      <span class="resumen-etiqueta">Total a Pagar</span>
+      <strong class="resumen-monto">${{ getTotal() }} MXN</strong>
+    </div>
+
+    <!-- Selector de Método de Pago -->
+    <div class="campo-pago-box">
+      <ion-item lines="none" class="select-metodo-item">
+        <ion-icon slot="start" name="wallet" color="primary"></ion-icon>
+        <ion-select label="Método de Pago" labelPlacement="stacked" placeholder="Seleccionar" [(ngModel)]="metodoPago">
+          <ion-select-option value="efectivo">Efectivo en Ventanilla (Pagar al recoger)</ion-select-option>
+          <ion-select-option value="tarjeta">Tarjeta Digital / Saldo UPVT</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </div>
+
+    <!-- Aviso claro cuando elige ventanilla -->
+    <div *ngIf="metodoPago === 'efectivo'" class="aviso-ventanilla">
+      <ion-icon name="information-circle"></ion-icon>
+      <span>
+        No se cobra en la app: se genera tu QR de pedido y pagas <strong>${{ getTotal() }} MXN</strong> en ventanilla al recoger.
+      </span>
+    </div>
+
+    <!-- Datos de tarjeta cuando se elige "tarjeta" -->
+    <div *ngIf="metodoPago === 'tarjeta'" class="tarjeta-sim-box">
+      <div class="tarjeta-sim-header">
+        <span class="tarjeta-icono">
+          <ion-icon name="card"></ion-icon>
+        </span>
+        <div>
+          <h4 class="tarjeta-titulo">Datos de Tarjeta</h4>
+          <p class="tarjeta-sub">Simulación segura para tu orden UPVT</p>
+        </div>
+      </div>
+
+      <div class="input-grupo">
+        <ion-item lines="none" class="input-moderno">
+          <ion-input
+            label="Nombre del Titular"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Como aparece en la tarjeta"
+            [(ngModel)]="datosTarjeta.titular">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="input-grupo">
+        <ion-item lines="none" class="input-moderno">
+          <ion-input
+            label="Número de Tarjeta"
+            labelPlacement="stacked"
+            type="text"
+            inputmode="numeric"
+            maxlength="19"
+            placeholder="1234 5678 1234 5678"
+            [(ngModel)]="datosTarjeta.numero"
+            (ionInput)="formatearNumeroTarjeta($event)">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="fila-dos-campos">
+        <div class="input-grupo mitad">
+          <ion-item lines="none" class="input-moderno">
+            <ion-input
+              label="Vencimiento"
+              labelPlacement="stacked"
+              type="text"
+              inputmode="numeric"
+              maxlength="5"
+              placeholder="MM/AA"
+              [(ngModel)]="datosTarjeta.vencimiento"
+              (ionInput)="formatearVencimiento($event)">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="input-grupo mitad">
+          <ion-item lines="none" class="input-moderno">
+            <ion-input
+              label="CVV"
+              labelPlacement="stacked"
+              type="password"
+              inputmode="numeric"
+              maxlength="4"
+              placeholder="123"
+              [(ngModel)]="datosTarjeta.cvv">
+            </ion-input>
+          </ion-item>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botón Principal Dinámico -->
+    <ion-button
+      expand="block"
+      color="success"
+      class="btn-pagar-qr"
+      (click)="procesarPago()">
+      <ion-icon name="qr-code" slot="start"></ion-icon>
+      {{ obtenerTextoBotonPago() }}
+    </ion-button>
+
+  </div>
+
+</ion-content>

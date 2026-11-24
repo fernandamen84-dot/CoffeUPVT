@@ -1,0 +1,53 @@
+<ion-app>
+
+  <ion-menu contentId="main-content" side="start" type="overlay">
+    <ion-header class="ion-no-border">
+      <ion-toolbar color="primary" class="barra-menu-upvt">
+        <ion-title>CAFETERÍA UPVT</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding menu-lateral-bg">
+
+      <!-- Opciones Principales -->
+      @for (m of principal; track $index) {
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            [routerLink]="m.ruta"
+            routerDirection="root"
+            lines="none"
+            class="opcion-menu"
+            [ngClass]="'opcion-' + $index">
+            <div slot="start" class="badge-icono">
+              <ion-icon [name]="m.icon"></ion-icon>
+            </div>
+            <ion-label class="titulo-opcion">{{ m.titulo }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      }
+
+      <!-- Opciones de Servicio de la Cafetería -->
+      @for (m of menu; track $index) {
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            [routerLink]="m.ruta"
+            routerDirection="root"
+            lines="none"
+            class="opcion-menu"
+            [ngClass]="'servicio-' + $index">
+            <div slot="start" class="badge-icono">
+              <ion-icon [name]="m.icon"></ion-icon>
+            </div>
+            <ion-label class="titulo-opcion">{{ m.titulo }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      }
+
+    </ion-content>
+  </ion-menu>
+
+  <div class="ion-page" id="main-content">
+    <ion-router-outlet></ion-router-outlet>
+  </div>
+
+</ion-app>

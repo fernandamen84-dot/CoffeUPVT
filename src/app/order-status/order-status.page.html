@@ -1,0 +1,198 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Estado de Orden</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding orden-bg">
+
+  <!-- Si NO hay orden activa -->
+  <div *ngIf="!ordenActiva" class="sin-orden-card">
+    <div class="sin-orden-icono">
+      <ion-icon name="receipt"></ion-icon>
+    </div>
+    <h3>No tienes pedidos activos</h3>
+    <p>Cuando realices un pedido en el carrito, aquí podrás ver su progreso, tu recorrido a la cafetería, tu código QR y descargar tu ticket en PDF.</p>
+    <ion-button fill="solid" color="primary" (click)="irAlMenu()">
+      <ion-icon name="restaurant" slot="start"></ion-icon>
+      Ir al Menú Principal
+    </ion-button>
+  </div>
+
+  <!-- Si SÍ hay orden activa -->
+  <ng-container *ngIf="ordenActiva">
+
+    <!-- 1. Tarjeta de progreso del pedido -->
+    <div class="orden-card">
+      <div class="orden-top">
+        <div>
+          <span class="orden-folio">ORDEN #{{ ordenActiva.id }}</span>
+          <h2 class="orden-estado-titulo">{{ ordenActiva.estado || '¡PEDIDO EN PREPARACIÓN!' }}</h2>
+        </div>
+        <span class="badge-pago" [class.pendiente]="ordenActiva.metodoPago === 'efectivo'">
+          {{ ordenActiva.estadoPago || (ordenActiva.metodoPago === 'efectivo' ? 'Pago en ventanilla' : 'Pagado') }}
+        </span>
+      </div>
+
+      <div class="pasos-progreso">
+        <div class="paso" [class.activo]="(ordenActiva.pasoIndex || 1) >= 1">
+          <div class="paso-circulo">
+            <ion-icon name="checkmark"></ion-icon>
+          </div>
+          <span>Recibido</span>
+        </div>
+        <div class="linea-paso" [class.activa]="(ordenActiva.pasoIndex || 1) >= 2"></div>
+        <div class="paso" [class.activo]="(ordenActiva.pasoIndex || 1) >= 2">
+          <div class="paso-circulo">
+            <ion-icon name="cafe"></ion-icon>
+          </div>
+          <span>Preparando</span>
+        </div>
+        <div class="linea-paso" [class.activa]="(ordenActiva.pasoIndex || 1) >= 3"></div>
+        <div class="paso" [class.activo]="(ordenActiva.pasoIndex || 1) >= 3">
+          <div class="paso-circulo">
+            <ion-icon name="bag-check"></ion-icon>
+          </div>
+          <span>Listo</span>
+        </div>
+      </div>
+
+      <div class="resumen-pedido-box">
+        <p class="resumen-texto">{{ ordenActiva.resumen }}</p>
+        <div class="resumen-pie">
+          <span>{{ ordenActiva.etiquetaPago }}</span>
+          <strong>Total: ${{ ordenActiva.total }} MXN</strong>
+        </div>
+      </div>
+
+      <!-- Botón para descargar ticket en PDF -->
+      <button type="button" class="btn-descargar-pdf" (click)="descargarTicketPdf()">
+        <ion-icon name="document-text"></ion-icon>
+        <span>Descargar ticket en PDF</span>
+      </button>
+    </div>
+
+    <!-- 2. Sección de Ubicación y Recorrido hacia Cafetería UPVT -->
+    <div class="tarjeta-mapa-upvt">
+      <div class="encabezado-mapa">
+        <span class="icono-pin-upvt">
+          <ion-icon name="location"></ion-icon>
+        </span>
+        <div>
+          <h3>Mapa UPVT · Cafetería</h3>
+          <p>Selecciona "Mi ubicación" y toca la tacita para ver la distancia y recorrido</p>
+        </div>
+      </div>
+
+      <div class="barra-controles-mapa">
+        <button
+          type="button"
+          class="btn-mi-ubicacion"
+          [disabled]="buscandoUbicacion"
+          (click)="seleccionarMiUbicacion()">
+          <ion-icon name="locate"></ion-icon>
+          <span>Mi ubicación</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn-tacita-cafe"
+          [class.activa]="rutaCafeteriaVisible"
+          (click)="mostrarRecorridoCafeteria()"
+          title="Ver recorrido hacia Cafetería">
+          <ion-icon name="cafe"></ion-icon>
+          <span>Cafetería</span>
+        </button>
+
+        <button
+          *ngIf="!recorridoEnVivo"
+          type="button"
+          class="btn-recorrido"
+          (click)="iniciarRecorrido()"
+          title="Iniciar recorrido">
+          <ion-icon name="play"></ion-icon>
+        </button>
+
+        <button
+          *ngIf="recorridoEnVivo"
+          type="button"
+          class="btn-detener"
+          (click)="detenerRecorrido()"
+          title="Detener recorrido">
+          <ion-icon name="stop"></ion-icon>
+        </button>
+
+        <button
+          type="button"
+          class="btn-recargar-mapa"
+          (click)="forzarRedibujadoMapa()"
+          title="Recargar mapa">
+          <ion-icon name="refresh"></ion-icon>
+        </button>
+      </div>
+
+      <div *ngIf="buscandoUbicacion" class="cargando-gps">
+        <ion-spinner name="crescent"></ion-spinner>
+        <span>Obteniendo tu ubicación...</span>
+      </div>
+
+      <div *ngIf="mensajeAviso" class="aviso-mapa">
+        <span>{{ mensajeAviso }}</span>
+        <button type="button" class="btn-probar-campus" (click)="simularUbicacionCampus()">
+          Probar en campus
+        </button>
+      </div>
+
+      <div id="mapa-upvt" class="lienzo-mapa-upvt"></div>
+
+      <div class="leyenda-puntos">
+        <span><i class="punto-rojo"></i> Tu ubicación</span>
+        <span><i class="punto-naranja"></i> Cafetería UPVT</span>
+      </div>
+
+      <div class="panel-ruta-upvt">
+        <div class="fila-dato">
+          <span>Tu ubicación:</span>
+          <strong>{{ textoUbicacionActual }}</strong>
+        </div>
+
+        <div class="fila-dato" *ngIf="distanciaCafeteria">
+          <span>Distancia a Cafetería:</span>
+          <strong class="resaltado-verde">{{ distanciaCafeteria }}</strong>
+        </div>
+
+        <div class="fila-dato" *ngIf="tiempoEstimado">
+          <span>Tiempo caminando:</span>
+          <strong>{{ tiempoEstimado }}</strong>
+        </div>
+
+        <p class="texto-indicacion">{{ indicacionRecorrido }}</p>
+
+        <a
+          *ngIf="ubicacionUsuario"
+          class="enlace-maps"
+          [href]="obtenerUrlComoLlegar()"
+          target="_blank"
+          rel="noopener noreferrer">
+          <ion-icon name="navigate-outline"></ion-icon>
+          <span>Cómo llegar en Google Maps</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 3. Tarjeta de Código QR -->
+    <div class="qr-card">
+      <h3 class="qr-titulo">Código QR de Recolección</h3>
+      <p class="qr-sub">Muéstralo en ventanilla al llegar por tu orden</p>
+      <div class="qr-marco">
+        <img [src]="ordenActiva.qrUrl" alt="Código QR de la orden" />
+      </div>
+      <span class="qr-codigo-texto">{{ ordenActiva.codigoQr }}</span>
+    </div>
+
+  </ng-container>
+
+</ion-content>

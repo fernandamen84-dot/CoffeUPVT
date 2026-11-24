@@ -1,0 +1,105 @@
+.menu-lateral-bg {
+  --background: #f4f2ee;
+}
+
+.barra-menu-upvt {
+  border-bottom: 3px solid #7fa982; /* Verde salvia que combina con café */
+}
+
+.separador-secciones {
+  height: 1px;
+  background: rgba(92, 58, 33, 0.14);
+  margin: 10px 4px 14px 4px;
+}
+
+ion-item.opcion-menu {
+  --border-radius: 14px;
+  --padding-start: 10px;
+  --padding-end: 12px;
+  --min-height: 54px;
+  margin-bottom: 9px;
+  box-shadow: 0 3px 10px rgba(43, 33, 27, 0.06);
+  transition: transform 0.15s ease;
+}
+
+ion-item.opcion-menu:active {
+  transform: scale(0.98);
+}
+
+.badge-icono {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.titulo-opcion {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2b211b;
+}
+
+/* Colores combinables con café */
+/* Catálogo / Menú: Durazno / Terracota suave */
+ion-item.opcion-0 {
+  --background: #fff3eb;
+  border-left: 4px solid #d97742;
+}
+ion-item.opcion-0 .badge-icono {
+  background: #fde2d2;
+  color: #b8531e;
+}
+
+/* Historial de Compras: Mostaza / Miel suave */
+ion-item.opcion-1 {
+  --background: #fef9e7;
+  border-left: 4px solid #d4a017;
+}
+ion-item.opcion-1 .badge-icono {
+  background: #f9ebb8;
+  color: #9e7408;
+}
+
+/* Mi Carrito: Menta / Verde salvia */
+ion-item.servicio-0 {
+  --background: #edf7f0;
+  border-left: 4px solid #4e875b;
+}
+ion-item.servicio-0 .badge-icono {
+  background: #d2ebd9;
+  color: #2f663c;
+}
+
+/* Estado de Orden: Agua / Azul menta */
+ion-item.servicio-1 {
+  --background: #ebf6f7;
+  border-left: 4px solid #3c8da3;
+}
+ion-item.servicio-1 .badge-icono {
+  background: #cce7ee;
+  color: #24687a;
+}
+
+/* Perfil del Estudiante: Rosa palo / Frambuesa suave */
+ion-item.servicio-2 {
+  --background: #fdf0f3;
+  border-left: 4px solid #c95b76;
+}
+ion-item.servicio-2 .badge-icono {
+  background: #f8d4dd;
+  color: #9e3852;
+}
+
+/* Personajes (Rick y Morty): Lavanda / Morado suave */
+ion-item.servicio-3 {
+  --background: #f3effb;
+  border-left: 4px solid #7d5ec2;
+}
+ion-item.servicio-3 .badge-icono {
+  background: #e1d6f7;
+  color: #583b9c;
+}

@@ -1,0 +1,303 @@
+.carrito-bg {
+  --background: #f6f5f2;
+}
+
+/* Notificaciones */
+.bloque-notificaciones {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 3px 10px rgba(43, 33, 27, 0.05);
+}
+
+.notif-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notif-icono {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #fef3c7;
+  color: #b45309;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Productos en carrito */
+.lista-productos-carrito {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.producto-carrito-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 3px 10px rgba(43, 33, 27, 0.06);
+  border-left: 4px solid #5c3a21;
+}
+
+.prod-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.prod-nombre {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2b211b;
+}
+
+.prod-precio-unit {
+  margin: 2px 0 4px 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.prod-subtotal {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4e6b31;
+  background: #edf7f0;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.prod-controles {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-cant {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  border: 1px solid #d6d3cd;
+  background: #faf9f6;
+  color: #2b211b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-cant:active {
+  background: #ede9e2;
+  transform: scale(0.95);
+}
+
+.cant-numero {
+  font-weight: 800;
+  font-size: 14px;
+  min-width: 18px;
+  text-align: center;
+  color: #2b211b;
+}
+
+.btn-eliminar {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  border: none;
+  background: #ffe4e6;
+  color: #dc2626;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  margin-left: 2px;
+  cursor: pointer;
+}
+
+.btn-eliminar:active {
+  background: #fecdd3;
+  transform: scale(0.95);
+}
+
+/* Carrito vacío */
+.carrito-vacio {
+  text-align: center;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px 20px;
+  margin-top: 24px;
+  box-shadow: 0 4px 14px rgba(43, 33, 27, 0.06);
+}
+
+.vacio-circulo {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #f3efe9;
+  color: #5c3a21;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.carrito-vacio h3 {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2b211b;
+}
+
+.carrito-vacio p {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Resumen y pago */
+.seccion-pago {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resumen-total-box {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 3px 10px rgba(43, 33, 27, 0.06);
+  border: 1px solid rgba(78, 107, 49, 0.22);
+}
+
+.resumen-etiqueta {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.resumen-monto {
+  font-size: 20px;
+  font-weight: 800;
+  color: #4e6b31;
+}
+
+.campo-pago-box {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 4px 8px;
+  box-shadow: 0 3px 10px rgba(43, 33, 27, 0.06);
+}
+
+.select-metodo-item {
+  --background: transparent;
+}
+
+.aviso-ventanilla {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fef9e7;
+  border-left: 4px solid #d4a017;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #5c4308;
+  box-shadow: 0 2px 8px rgba(43, 33, 27, 0.05);
+}
+
+.aviso-ventanilla ion-icon {
+  font-size: 20px;
+  color: #b45309;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Formulario de tarjeta */
+.tarjeta-sim-box {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 4px 14px rgba(43, 33, 27, 0.07);
+  border-top: 4px solid #5c3a21;
+}
+
+.tarjeta-sim-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tarjeta-icono {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ede9fe;
+  color: #6d28d9;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.tarjeta-titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2b211b;
+}
+
+.tarjeta-sub {
+  margin: 2px 0 0 0;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.input-grupo {
+  margin-bottom: 10px;
+}
+
+.input-moderno {
+  --background: #f8f7f4;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e2dc;
+}
+
+.fila-dos-campos {
+  display: flex;
+  gap: 10px;
+}
+
+.mitad {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.btn-pagar-qr {
+  --border-radius: 14px;
+  --box-shadow: 0 6px 16px rgba(78, 107, 49, 0.25);
+  height: 48px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin-top: 4px;
+}

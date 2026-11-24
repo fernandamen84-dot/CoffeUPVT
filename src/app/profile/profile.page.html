@@ -1,0 +1,382 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{ sesionActiva ? 'Perfil de Estudiante' : (modoAcceso === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta') }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding perfil-bg">
+
+  <!-- Input oculto para seleccionar foto de galería/archivo -->
+  <input
+    #inputFoto
+    type="file"
+    accept="image/*"
+    style="display: none;"
+    (change)="onSeleccionarFoto($event)" />
+
+  <!-- ================= VISTA CUANDO LA SESIÓN ESTÁ ACTIVA ================= -->
+  <ng-container *ngIf="sesionActiva">
+
+    <!-- Tarjeta superior de identidad estudiantil -->
+    <div class="perfil-hero-card">
+      <div class="avatar-contenedor">
+        <div class="avatar-ring">
+          <div class="avatar-circulo">
+            <img *ngIf="perfil.foto" [src]="perfil.foto" alt="Foto del alumno" class="avatar-img" />
+            <ion-icon *ngIf="!perfil.foto" name="person"></ion-icon>
+          </div>
+        </div>
+
+        <button
+          *ngIf="editandoPerfil"
+          type="button"
+          class="btn-editar-foto"
+          (click)="abrirSelectorFoto(inputFoto)"
+          aria-label="Editar foto del alumno">
+          <ion-icon name="camera"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Tuerca pequeña centrada debajo de la foto -->
+      <div class="fila-tuerca-debajo">
+        <button
+          type="button"
+          class="btn-tuerca-pequena"
+          [class.activa]="editandoPerfil"
+          (click)="alternarModoEdicion()"
+          aria-label="Configurar y editar perfil">
+          <ion-icon name="settings"></ion-icon>
+          <span>{{ editandoPerfil ? 'Editando' : 'Configurar' }}</span>
+        </button>
+      </div>
+
+      <h2 class="perfil-nombre-display">
+        {{ perfil.nombre.trim() ? perfil.nombre : 'Estudiante UPVT' }}
+      </h2>
+      <p class="perfil-carrera">Ing. en Tecnologías de la Información</p>
+
+      <div class="perfil-chips-info" *ngIf="perfil.matricula">
+        <span class="chip-matricula">
+          <ion-icon name="id-card"></ion-icon>
+          Matrícula: {{ perfil.matricula }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Panel de configuración y edición -->
+    <div class="formulario-perfil-card">
+      <div class="encabezado-seccion-perfil">
+        <h3 class="seccion-titulo">
+          {{ editandoPerfil ? 'Configurar y Editar Perfil' : 'Datos del Estudiante' }}
+        </h3>
+        <span class="pill-modo" [class.edicion]="editandoPerfil">
+          {{ editandoPerfil ? 'Editando' : 'Vista' }}
+        </span>
+      </div>
+
+      <!-- Controles de foto solo dentro de la configuración de edición -->
+      <div *ngIf="editandoPerfil" class="config-foto-box">
+        <div class="config-foto-texto">
+          <ion-icon name="image"></ion-icon>
+          <span>Foto del alumno</span>
+        </div>
+        <div class="config-foto-botones">
+          <button type="button" class="btn-foto-accion" (click)="abrirSelectorFoto(inputFoto)">
+            {{ perfil.foto ? 'Cambiar foto' : 'Elegir foto' }}
+          </button>
+          <button *ngIf="perfil.foto" type="button" class="btn-foto-quitar" (click)="quitarFoto()">
+            Quitar
+          </button>
+        </div>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #ede9fe; color: #6d28d9;">
+          <ion-icon name="person"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Nombre Completo"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Nombre completo"
+            [readonly]="!editandoPerfil"
+            [(ngModel)]="perfil.nombre">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #e0f2fe; color: #0284c7;">
+          <ion-icon name="mail"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Correo Institucional"
+            labelPlacement="stacked"
+            type="email"
+            placeholder="correo@upvt.edu.mx"
+            [readonly]="!editandoPerfil"
+            [(ngModel)]="perfil.correo">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #fef3c7; color: #b45309;">
+          <ion-icon name="card"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Matrícula"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Matrícula"
+            [readonly]="!editandoPerfil"
+            [(ngModel)]="perfil.matricula">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil ultimo-campo">
+        <span class="icono-campo" style="background: #dcfce7; color: #15803d;">
+          <ion-icon name="call"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Teléfono"
+            labelPlacement="stacked"
+            type="tel"
+            placeholder="Teléfono"
+            [readonly]="!editandoPerfil"
+            [(ngModel)]="perfil.telefono">
+          </ion-input>
+        </ion-item>
+      </div>
+    </div>
+
+    <!-- Acciones del perfil -->
+    <div class="acciones-perfil">
+      <ion-button
+        *ngIf="editandoPerfil"
+        expand="block"
+        color="success"
+        class="btn-guardar-perfil"
+        (click)="guardarCambios()">
+        <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+        GUARDAR CAMBIOS
+      </ion-button>
+
+      <button
+        *ngIf="editandoPerfil"
+        type="button"
+        class="btn-cancelar-edicion"
+        (click)="cancelarEdicion()">
+        Cancelar edición
+      </button>
+
+      <button
+        type="button"
+        class="btn-cerrar-sesion"
+        (click)="cerrarSesion()">
+        <ion-icon name="log-out"></ion-icon>
+        <span>CERRAR SESIÓN</span>
+      </button>
+    </div>
+
+  </ng-container>
+
+  <!-- ================= VISTA CUANDO SE CERRÓ SESIÓN (LOGIN / CREAR CUENTA) ================= -->
+  <div *ngIf="!sesionActiva" class="acceso-contenedor">
+
+    <!-- Encabezado limpio con logo sin tarjeta pesada -->
+    <div class="acceso-marca-limpia">
+      <div class="acceso-icono-principal">
+        <img src="assets/CoffeUPVT.png" alt="Logo Cafetería UPVT" class="logo-acceso-img" />
+      </div>
+      <h2 class="acceso-titulo">CoffeUPVT</h2>
+    </div>
+
+    <!-- Selector compacto entre Iniciar Sesión y Crear Cuenta -->
+    <div class="tabs-acceso">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.activo]="modoAcceso === 'login'"
+        (click)="cambiarModoAcceso('login')">
+        Iniciar Sesión
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.activo]="modoAcceso === 'registro'"
+        (click)="cambiarModoAcceso('registro')">
+        Crear Cuenta
+      </button>
+    </div>
+
+    <!-- Formulario: INICIAR SESIÓN -->
+    <div *ngIf="modoAcceso === 'login'" class="formulario-perfil-card">
+      <h3 class="seccion-titulo">Acceso con Cuenta UPVT</h3>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #fef3c7; color: #b45309;">
+          <ion-icon name="card"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Matrícula o Correo Institucional"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Ej. 1323443129 o correo@upvt.edu.mx"
+            [(ngModel)]="loginForm.identificador">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil ultimo-campo">
+        <span class="icono-campo" style="background: #ede9fe; color: #6d28d9;">
+          <ion-icon name="lock-closed"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Contraseña / NIP"
+            labelPlacement="stacked"
+            type="password"
+            placeholder="Ingresa tu contraseña"
+            [(ngModel)]="loginForm.password">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <ion-button
+        expand="block"
+        color="primary"
+        class="btn-acceso-principal"
+        (click)="iniciarSesion()">
+        <ion-icon name="log-in" slot="start"></ion-icon>
+        INICIAR SESIÓN
+      </ion-button>
+
+      <p class="texto-ayuda-acceso">
+        ¿Aún no tienes cuenta?
+        <button type="button" class="enlace-inline" (click)="cambiarModoAcceso('registro')">
+          Crear una cuenta aquí
+        </button>
+      </p>
+    </div>
+
+    <!-- Formulario: CREAR CUENTA -->
+    <div *ngIf="modoAcceso === 'registro'" class="formulario-perfil-card">
+      <h3 class="seccion-titulo">Registro de Nuevo Estudiante</h3>
+
+      <div class="registro-foto-row">
+        <div class="avatar-mini">
+          <img *ngIf="registroForm.foto" [src]="registroForm.foto" alt="Foto nuevo alumno" class="avatar-img" />
+          <ion-icon *ngIf="!registroForm.foto" name="person"></ion-icon>
+        </div>
+        <button type="button" class="btn-foto-accion" (click)="abrirSelectorFotoRegistro(inputFoto)">
+          {{ registroForm.foto ? 'Cambiar foto' : 'Subir foto (opcional)' }}
+        </button>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #ede9fe; color: #6d28d9;">
+          <ion-icon name="person"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Nombre Completo"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Tu nombre completo"
+            [(ngModel)]="registroForm.nombre">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #fef3c7; color: #b45309;">
+          <ion-icon name="card"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Matrícula"
+            labelPlacement="stacked"
+            type="text"
+            placeholder="Tu matrícula UPVT"
+            [(ngModel)]="registroForm.matricula">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #e0f2fe; color: #0284c7;">
+          <ion-icon name="mail"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Correo Institucional"
+            labelPlacement="stacked"
+            type="email"
+            placeholder="correo@upvt.edu.mx"
+            [(ngModel)]="registroForm.correo">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="icono-campo" style="background: #dcfce7; color: #15803d;">
+          <ion-icon name="call"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Teléfono"
+            labelPlacement="stacked"
+            type="tel"
+            placeholder="10 dígitos"
+            [(ngModel)]="registroForm.telefono">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <div class="campo-perfil ultimo-campo">
+        <span class="icono-campo" style="background: #fce7f3; color: #be185d;">
+          <ion-icon name="lock-closed"></ion-icon>
+        </span>
+        <ion-item lines="none" class="input-perfil-item">
+          <ion-input
+            label="Contraseña"
+            labelPlacement="stacked"
+            type="password"
+            placeholder="Crea una contraseña"
+            [(ngModel)]="registroForm.password">
+          </ion-input>
+        </ion-item>
+      </div>
+
+      <ion-button
+        expand="block"
+        color="success"
+        class="btn-acceso-principal"
+        (click)="crearCuenta()">
+        <ion-icon name="person-add" slot="start"></ion-icon>
+        CREAR CUENTA
+      </ion-button>
+
+      <p class="texto-ayuda-acceso">
+        ¿Ya tienes cuenta?
+        <button type="button" class="enlace-inline" (click)="cambiarModoAcceso('login')">
+          Inicia sesión aquí
+        </button>
+      </p>
+    </div>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,65 @@
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div style="max-width: 400px; margin: 40px auto 0 auto; text-align: center;">
+
+    <!-- Icono / Logo de bienvenida -->
+    <div style="width: 90px; height: 90px; margin: 0 auto 15px auto; background-color: var(--ion-color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(92, 58, 33, 0.25);">
+      <ion-icon name="cafe" style="font-size: 48px; color: #fcf9f2;"></ion-icon>
+    </div>
+
+    <h1 style="font-weight: bold; color: var(--ion-color-primary); margin-bottom: 5px;">CoffeUPVT</h1>
+    <p style="color: #8c6239; font-size: 14px; margin-top: 0;">Cafetería Universitaria</p>
+
+    <!-- Selector entre Iniciar Sesión y Registrarse -->
+    <ion-segment [(ngModel)]="modo" class="ion-margin-vertical" color="primary">
+      <ion-segment-button value="login">
+        <ion-label>Iniciar Sesión</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="registro">
+        <ion-label>Crear Cuenta</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- FORMULARIO DE INICIO DE SESIÓN -->
+    <ion-card *ngIf="modo === 'login'" style="border-radius: 16px; padding: 10px; box-shadow: 0 4px 16px rgba(92, 58, 33, 0.08);">
+      <ion-card-content>
+        <ion-item lines="full" class="ion-margin-bottom">
+          <ion-input label="Correo Institucional" labelPlacement="stacked" type="email" placeholder="alumno@upvt.edu.mx" [(ngModel)]="loginData.email"></ion-input>
+        </ion-item>
+
+        <ion-item lines="full" class="ion-margin-bottom">
+          <ion-input label="Contraseña" labelPlacement="stacked" type="password" placeholder="••••••••" [(ngModel)]="loginData.password"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" shape="round" color="primary" class="ion-margin-top" style="height: 46px; font-weight: bold;" (click)="iniciarSesion()">
+          ENTRAR
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- FORMULARIO DE REGISTRO (CREAR CUENTA) -->
+    <ion-card *ngIf="modo === 'registro'" style="border-radius: 16px; padding: 10px; box-shadow: 0 4px 16px rgba(92, 58, 33, 0.08);">
+      <ion-card-content>
+        <ion-item lines="full" class="ion-margin-bottom">
+          <ion-input label="Nombre Completo" labelPlacement="stacked" placeholder="Ej. Fernanda Méndez" [(ngModel)]="registroData.nombre"></ion-input>
+        </ion-item>
+
+        <ion-item lines="full" class="ion-margin-bottom">
+          <ion-input label="Matrícula" labelPlacement="stacked" placeholder="Ej. 2026001" [(ngModel)]="registroData.matricula"></ion-input>
+        </ion-item>
+
+        <ion-item lines="full" class="ion-margin-bottom">
+          <ion-input label="Correo Institucional" labelPlacement="stacked" type="email" placeholder="alumno@upvt.edu.mx" [(ngModel)]="registroData.email"></ion-input>
+        </ion-item>
+
+        <ion-item lines="full" class="ion-margin-bottom">
+          <ion-input label="Contraseña" labelPlacement="stacked" type="password" placeholder="Crea una contraseña" [(ngModel)]="registroData.password"></ion-input>
+        </ion-item>
+
+        <ion-button expand="block" shape="round" color="secondary" class="ion-margin-top" style="height: 46px; font-weight: bold;" (click)="crearCuenta()">
+          REGISTRARME
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

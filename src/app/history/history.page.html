@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button auto-hide="false"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Historial de Compras</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list *ngIf="ordenes.length > 0">
+    <ion-item *ngFor="let orden of ordenes">
+      <ion-label>
+        <h2>Orden #{{ orden.id }} — ${{ orden.total }} MXN</h2>
+        <p>{{ orden.resumen }}</p>
+        <p style="font-size: 12px;">
+          Pago: <strong>{{ orden.etiquetaPago || (orden.metodoPago === 'tarjeta' ? 'Tarjeta Digital / Saldo UPVT' : 'Efectivo en Ventanilla') }}</strong>
+        </p>
+        <p style="font-size: 12px;">Código QR: <strong>{{ orden.codigoQr }}</strong> · {{ orden.fecha }}</p>
+        <ion-note [color]="orden.estado === 'Entregado' ? 'medium' : 'success'">
+          {{ orden.estado }}
+        </ion-note>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="ordenes.length === 0" class="ion-text-center ion-padding" style="margin-top: 40px;">
+    <p style="color: #666;">Aún no tienes compras registradas.</p>
+  </div>
+</ion-content>

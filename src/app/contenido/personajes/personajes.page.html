@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>personajes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button (click)="personajesSrvc()" shape="round">
+          Obtener Personajes
+        </ion-button>
+      </ion-col>
+      <ion-col size="12">
+        @for (p of listapersonajes(); track $index) {
+        <ion-item [id]="p.id">
+          <ion-avatar slot="start">
+            <img [src]="p.image" />
+          </ion-avatar>
+          <ion-label> {{p.name}} </ion-label>
+        </ion-item>
+        <ion-modal #modal [trigger]="p.id">
+          <ng-template>
+            <ion-content>
+              <ion-toolbar>
+                <ion-title>{{p.name}}</ion-title>
+                <ion-buttons slot="end">
+                  <ion-button color="light" (click)="modal.dismiss()">Close</ion-button>
+                </ion-buttons>
+              </ion-toolbar>
+              <ion-card>
+                <ion-card-header>
+                  <img [src]="p.image" />
+                </ion-card-header>
+                <ion-card-content>
+                  <!-- Características abajo de la imagen -->
+                  <p><strong>Estado:</strong> {{ $any(p).status }}</p>
+                  <p><strong>Especie:</strong> {{ $any(p).species }}</p>
+                  <p><strong>Género:</strong> {{ $any(p).gender }}</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
+        }
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
